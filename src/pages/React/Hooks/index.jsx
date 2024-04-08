@@ -1,7 +1,15 @@
+import { useEffect, useState } from "react";
 import PostHeader from "../../../components/PostHeader";
 import SimpleCard from "../../../components/SimpleCard";
+import useFetch from "../../../hooks/useFetch";
 
 function Hooks() {
+ const [randomPassword, setRandomPassword] = useState();
+ const [contador, setContador] = useState(0);
+ const [secondsInThePage, setSecondsInThePage] = useState(0);
+ const [users, loading] = useFetch(
+  "https://jsonplaceholder.typicode.com/users"
+ );
  function generatePassword(length) {
   const charset =
    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -11,8 +19,18 @@ function Hooks() {
    pass += charset.charAt(Math.floor(Math.random() * charset.length));
   }
 
-  console.log(pass);
+  setRandomPassword(pass);
  }
+
+ function contado() {
+  setContador(contador + 1);
+ }
+
+ useEffect(() => {
+  setTimeout(() => {
+   setSecondsInThePage(secondsInThePage + 1);
+  }, 1000);
+ }, [secondsInThePage]);
 
  return (
   <div>
@@ -30,7 +48,10 @@ function Hooks() {
       <h2 className="second-title">Hooks de estado</h2>
 
       <h2 className="caption">O que é estado</h2>
-      <span className="mb-2">...</span>
+      <span className="mb-2">
+       Uma maneira de guardar informações no componente, informações que eu
+       quero que sejam atualizadas na tela assim que forem alteradas no codigo
+      </span>
 
       <h2 className="caption">Pra que servem os Hooks de estado</h2>
       <span className="mb-2">...</span>
@@ -115,7 +136,7 @@ function Hooks() {
      <h2 className="section-title">Demonstrações práticas</h2>
 
      <SimpleCard>
-      <h2 className="second-title">Criando um gerador de valores aleatórios</h2>
+      <h2 className="second-title">Criando um gerador de senha</h2>
       <p className="mb-2">
        O botão abaixo vai gerar uma senha aleatória sempre que você clicar nele.
        Perceba que o componente influenciado pelo valor do estado é atualizado
@@ -126,15 +147,25 @@ function Hooks() {
        Gerar senha
       </button>
 
-      <p className="caption">Senha gerada: </p>
+      <p className="caption">Senha gerada: {randomPassword}</p>
+     </SimpleCard>
+
+     <SimpleCard>
+      <h2 className="second-title">Criando um contador</h2>
+      <p className="mb-2">O botão abaixo vai ...</p>
+
+      <button className="mb-1" onClick={() => contado()}>
+       adicionar
+      </button>
+      <h1>Valor contador: {contador}</h1>
      </SimpleCard>
 
      <SimpleCard>
       <h2 className="second-title">useEffect</h2>
       <p className="mb-1">
        Graças ao useEffect, assim que você entrou na página o contador abaixo
-       foi iniciado e indica que você permaneceu nessa página por <b>...</b>{" "}
-       segundos
+       foi iniciado e indica que você permaneceu nessa página por{" "}
+       <b>{secondsInThePage}</b> segundos
       </p>
      </SimpleCard>
 
@@ -146,13 +177,15 @@ function Hooks() {
        busca de dados.
       </p>
 
-      {/* {isLoading && <p>Carregando usuários...</p>}
+      {loading && <h4>carregando usuários</h4>}
 
-      {!isLoading && (
+      {!loading && users !== null && (
        <ul>
-        {users && users.map((user) => <li key={user.id}>{user.name}</li>)}
+        {users.map((user) => (
+         <p key={user.id}>{user.name}</p>
+        ))}
        </ul>
-      )} */}
+      )}
      </SimpleCard>
     </div>
    </div>

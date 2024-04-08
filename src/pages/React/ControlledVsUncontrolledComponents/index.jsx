@@ -1,12 +1,43 @@
+import { useRef, useState } from "react";
 import PostHeader from "../../../components/PostHeader";
 import SimpleCard from "../../../components/SimpleCard";
 
 function UncontrolledComponent() {
- return <h1>Componente não controlado</h1>;
+ const inputRef = useRef();
+ function submitUncontrolledClass(e) {
+  e.preventDefault();
+  window.alert(
+   "Você enviou o formulario da turma: " + inputRef?.current?.value
+  );
+ }
+ return (
+  <form onSubmit={(e) => submitUncontrolledClass(e)}>
+   <input type="text" ref={inputRef} name="uncontrolled-class" />
+   <button type="submit">enviar</button>
+  </form>
+ );
 }
 
 function ControlledComponent() {
- return <h1>Componente controlado</h1>;
+ const [controledClass, setControledClass] = useState("");
+ function submitControlledClass(e) {
+  e.preventDefault();
+  window.alert("Você enviou o formulario da turma: " + controledClass);
+ }
+ return (
+  <form onSubmit={(e) => submitControlledClass(e)}>
+   <input
+    type="text"
+    value={controledClass}
+    onChange={(e) => {
+     setControledClass(e.target.value);
+     console.log("Alterando o valor do estado para: " + e.target.value);
+    }}
+    name="controlled-class"
+   />
+   <button type="submit">Enviar</button>
+  </form>
+ );
 }
 
 function ControlledVsUncontrolledComponents() {
@@ -14,7 +45,7 @@ function ControlledVsUncontrolledComponents() {
   <div>
    <PostHeader
     title="Componentes controlados e não controlados"
-    description="Descreva o recurso de forma breve"
+    description="Controlados dependem da mudança de um estado enquanto os não controlados não dependem"
    />
 
    <div id="page-content">
@@ -23,7 +54,9 @@ function ControlledVsUncontrolledComponents() {
 
      <SimpleCard>
       <h2 className="caption">Definição</h2>
-      <span>...</span>
+      <span>
+       São componentes controlados por recursos fornecidos pelo React
+      </span>
      </SimpleCard>
 
      <SimpleCard>
@@ -40,7 +73,10 @@ function ControlledVsUncontrolledComponents() {
 
      <SimpleCard>
       <h2 className="caption">Definição</h2>
-      <span>...</span>
+      <span>
+       São componentes onde suas informações estão presentes somente no DOM e
+       essas informações são resgatadas por meio de referencias
+      </span>
      </SimpleCard>
 
      <SimpleCard>
